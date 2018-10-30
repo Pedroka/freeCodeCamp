@@ -1,0 +1,25 @@
+DICIONÁRIOS E ARQUIVOS - PYTHON
+
+  DICIONÁRIOS
+Este é outro objeto bastante útil em Python. Um dicionário relaciona termos chave com valores para cada um. É como se fossem várias variáveis, unidas por um 'motivo' comum. Sua representação é bem simples: a chave é seguida por dois pontos, e depois pelo valor de tal chave. Para separar cada item do dicionários, usamos vírgulas. Veja: 
+
+>>> DicionExemplo={"primeiro":"janeiro", "segundo":"fevereiro","terceiro":"março"}
+>>> DicionVazio={} #inicializa um dicionário vazio
+>>> DicionExemplo["segundo"] #encontra o valor da chave 'segundo'
+'fevereiro'
+>>> DicionExemplo["quarto"]="abril" #acrescenta uma entrada para o dicionário
+>>> print DicionExemplo
+{"primeiro":"janeiro", "segundo":"fevereiro","terceiro":"março","quarto":"abril"} 
+
+ABRINDO ARQUIVOS (LENDO E ESCREVENDO)
+Se quisermos criar um arquivo, fazemos uso de uma função nativa do Python: open(nomeDoArquivo,modo). Aqui, o 'modo' serve para indicar o que você fará com o arquivo. Os mais normais são 'w' para escrever('write') e 'r' para apenas ler('read'). Depois de criado, você pode ler com read(), escrever com write(), ou fechá-lo com close(). Observe este exemplo: 
+
+>>> teste = open('exemplo','w')
+>>> teste.write('Diga aí !!!')
+>>> teste.close()
+>>> leitura = open('exemplo'.'r')
+>>> arquivoDeTexto = leitura.read()
+>>> leitura.close()
+>>> print arquivoDeTexto
+Diga aí !!!
+>>> 
