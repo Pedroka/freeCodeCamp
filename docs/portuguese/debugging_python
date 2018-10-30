@@ -1,0 +1,188 @@
+# Debugando o Python
+O Módulo pdb (Python Debugger) foi feito para debugar os programas, utilizando alguns comandos. Esse artigo não cobre o uso mais a fundo do pdb, mais sim, uma breve introdução ao seu uso.
+
+Iniciando o pdb
+
+Para iniciarmos o uso no pdb, devemos ter um programa para testar. Crie um arquivo chamado exemplo1.py com o seguinte conteúdo:
+
+# Definindo as variaveis
+nome       = "Fabio"
+sobrenome  = "Rizzo"
+site       = "http://www.fabiorizzo.com"
+
+# concatenando as variaveis
+junto   = "Meu nome eh %s %s, e meu site eh o: %s" %(nome,sobrenome,site)
+
+# Imprimindo a variavel
+print junto
+Este é um simples programa. Vamos agora chamar a biblioteca pdb neste programa. Adicione a seguinte linha no inicio do programa
+
+import pdb
+E agora, vamos adicionar um ponto em nosso programa, para realizarmos o rastreamento para o debug.
+
+pdb.set_trace()
+O código do programa devera está igual a este:
+
+# Importando o Modulo
+import pdb
+
+# definindo o rastreamento
+pdb.set_trace()
+
+# Definindo as variaveis
+nome       = "Fabio"
+sobrenome  = "Rizzo"
+site       = "http://www.fabiorizzo.com"
+
+# concatenando as variaveis
+junto   = "Meu nome eh %s %s, e meu site eh o: %s" %(nome,sobrenome,site)
+
+# Imprimindo a variavel
+print junto
+Agora no prompt de comando execute o programa, como abaixo:
+
+fabiorizzo@darkdarkness:~/artigos/debugando_python$ python exemplo1.py
+> /home/fabiorizzo/artigos/debugando_python/exemplo1.py(10)?()
+-> nome       = "Fabio"
+Ao executar o programa, colocamos o pdb.set_trace() antes da definição das variaveis, assim, logo depois que a chamado do set_trace() foi feita, caimos em um prompt, mostrando a próxima ação.
+
+A próxima ação nesse caso é nome = "Fabio" . O pdb está esperando um comando nosso sobre o que fazer, pois nesse momento, o nosso programa está parado e aguardando.
+
+Nós iremos executar o comando n, que significa next. Esse comando faz com que o pdb execute a próxima instrução, no nosso exemplo: nome = "Fabio" .
+
+(Pdb) n
+> /home/fabiorizzo/artigos/debugando_python/exemplo1.py(11)?()
+-> sobrenome  = "Rizzo"
+Baseado no nosso comando anterior, o n, podemos verificar que a próxima instrução é: sobrenome = "Rizzo" Porém, gostaria de ver onde está instrução será executada no código.
+
+Para isso, iremos utilizar o comando l de list. Veja:
+
+(Pdb) l
+  6     pdb.set_trace()
+  7
+  8
+  9     # Definindo as variaveis
+ 10     nome       = "Fabio"
+ 11  -> sobrenome  = "Rizzo"
+ 12     site       = "http://www.fabiorizzo.com"
+ 13
+ 14     # concatenando as variaveis
+ 15     junto   = "Meu nome eh %s %s, e meu site eh o: %s" %(nome,sobrenome,site)
+ 16
+Veja que o pdb nos mostra o código, onde está a nossa instrução (indicado pela seta) e o número da linha onde ela está.
+
+Depois de olharmos o código, decidimos ir para a próxima instrução. Novamente, utilizamos o comando n
+
+	
+(Pdb) n
+> /home/fabiorizzo/artigos/debugando_python/exemplo1.py(12)?()
+-> site       = "http://www.fabiorizzo.com"
+Podemos ver a qual será a instrução, e com isso, vamos ir para a próxima. Contudo, o pdb tem um recurso que permite utilizar o enter para repetir o último comando realizado dentro do debug. Como o nosso último comando feito foi o n, então, ao pressionarmos o enter, o comando executado é o n. O mesmo seria para os demais comandos do pdb.
+
+(Pdb)
+> /home/fabiorizzo/artigos/debugando_python/exemplo1.py(15)?()
+-> junto   = "Meu nome eh %s %s, e meu site eh o: %s" %(nome,sobrenome,site)
+Percebemos que a próxima instrução utiliza o conteúdo das variáveis que definimos anteriormente no programa. Porém, gostaríamos de saber qual é o valor dessas variáveis. Para isso, utilizamos o comando p. Veja:
+
+(Pdb) p nome
+"Fabio"
+(Pdb) p sobrenome
+"Rizzo"
+Como visto acima, é muito fácil visualizar o conteúdo das variavéis. Vamos visualizar o nosso código agora:
+
+(Pdb) l
+ 10     nome       = "Fabio"
+ 11     sobrenome  = "Rizzo"
+ 12     site       = "http://www.fabiorizzo.com"
+ 13
+ 14     # concatenando as variaveis
+ 15  -> junto   = "Meu nome eh %s %s, e meu site eh o: %s" %(nome,sobrenome,site)
+ 16
+ 17     # Imprimindo a variavel
+ 18     print junto
+ 19
+[EOF]
+Veja esse [EOF], que nada mais é que a indicação do fim do arquivo. Vamos tentar ver o conteúdo da variável junto:
+
+(Pdb) p junto
+*** NameError: <exceptions.NameError instance at 0xb7e2cdcc>
+Este erro ocorreu, porque a variável junto ainda não foi atribuida. Vamos continuar a execução do programa, desligando o prompt do pdb. Para isso usamos o comando c. E o comando q do pdb, sai do programa.
+
+(Pdb) c
+Meu nome eh Fabio Rizzo, e meu site eh o: http://www.fabiorizzo.com
+Esses são alguns recursos que o pdb nos proporciona. Porém existe uma forma de entrarmos dentro do valores de funções.
+
+Para isso, vamos mudar o código de nosso programa para:
+
+import pdb
+
+# Criando uma funcao para teste
+def mudatudo(nome,sobrenome):
+    novonome = nome.replace("Fabio","Dorneles")
+    novosobrenome = sobrenome.replace("Rizzo","Tremea")
+    return novonome + novosobrenome
+
+# definindo o rastreamento
+pdb.set_trace()
+
+# Definindo as variaveis
+nome       = "Fabio"
+sobrenome  = "Rizzo"
+site       = "http://www.fabiorizzo.com"
+
+# concatenando as variaveis
+#junto   = "Meu nome eh %s %s, e meu site eh o: %s" %(nome,sobrenome,site)
+
+junto = mudatudo(nome,sobrenome)
+
+# Imprimindo a variavel
+print junto
+Agora, com o código modificado, vamos executar o nosso programa.
+
+fabiorizzo@darkdarkness:~/artigos/debugando_python$ python exemplo1.py
+> /home/fabiorizzo/artigos/debugando_python/exemplo1.py(14)?()
+-> nome       = "Fabio"
+(Pdb) n
+> /home/fabiorizzo/artigos/debugando_python/exemplo1.py(15)?()
+-> sobrenome  = "Rizzo"
+(Pdb) n
+> /home/fabiorizzo/artigos/debugando_python/exemplo1.py(16)?()
+-> site       = "http://www.fabiorizzo.com"
+(Pdb) n
+> /home/fabiorizzo/artigos/debugando_python/exemplo1.py(21)?()
+-> junto = mudatudo(nome,sobrenome)
+Como você pode ver, nós fomos chamando as instruções, chegamos na instrução junto = mudatudo(nome,sobrenome) , que nada mais é que uma função. Se executarmos o comando n, nós iremos passar para a próxima instrução, mais nós gostaríamos é de ver o que a função mudatudo faz. Nesse caso, executamos o comando s , que nós leva pra dentro da função.
+
+(Pdb) s
+--Call--
+> /home/fabiorizzo/artigos/debugando_python/exemplo1.py(5)mudatudo()
+-> def mudatudo(nome,sobrenome):
+(Pdb) n
+> /home/fabiorizzo/artigos/debugando_python/exemplo1.py(6)mudatudo()
+-> novonome = nome.replace("Fabio","Dorneles")
+(Pdb) n
+> /home/fabiorizzo/artigos/debugando_python/exemplo1.py(7)mudatudo()
+-> novosobrenome = sobrenome.replace("Rizzo","Tremea")
+(Pdb) n
+> /home/fabiorizzo/artigos/debugando_python/exemplo1.py(8)mudatudo()
+-> return novonome + novosobrenome
+(Pdb) n
+--Return--
+> /home/fabiorizzo/artigos/debugando_python/exemplo1.py(8)mudatudo()->"DornelesTremea"
+-> return novonome + novosobrenome
+Como vimos acima, pudemos navegar dentro da função, até o momento em que podemos ver o seu resultado.
+
+(Pdb) n
+> /home/fabiorizzo/artigos/debugando_python/exemplo1.py(24)?()
+-> print junto
+(Pdb) p junto
+"DornelesTremea"
+(Pdb) n
+DornelesTremea
+--Return--
+> /home/fabiorizzo/artigos/debugando_python/exemplo1.py(24)?()->None
+-> print junto
+(Pdb) n
+
+
+Read more: http://www.linhadecodigo.com.br/artigo/757/debugando-o-python.aspx#ixzz5VPl1S9Gy
