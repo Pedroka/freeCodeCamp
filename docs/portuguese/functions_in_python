@@ -1,0 +1,25 @@
+# FUNÇÕES EM PYTHON
+ 
+Python certamente também trabalha com funções. Se você está começando a programar agora, funções são trechos de programas que podem ser chamados no momento desejado, a fim de realizar alguma 'tarefa'. Cada linguagem de programação tem sua forma de lidar com funções. Mas o padrão é quase sempre o mesmo: declaramos a função, passando quaisquer parâmetros necessários para seu funcionamento (ou seja, quaisquer dados que a função precisa usar); então, escrevemos o código das tarefas a serem executadas pela função, isto é, o trecho do programa que aquela função realizará; por fim, podemos fornecer um 'valor' de retorno da função: algum 'valor' que a função devolve ao programa que a chamou. Veja um exemplo de declaração de funções em Python. 
+
+Digamos que você quer calcular a média, sua e de alguns amigos, em um curso técnico de Administração em Redes Linux. Para não ficar fazendo dezenas de contas, você escreve uma função e envia para eles (aproveitando para praticar Python, óbvio). A função que você envia é a seguinte: 
+
+>>> def MedCurso(total, numMaterias):
+... # O sinal de cerquilha (#) é compreendido por Python como iniciando
+... # um comentário. Portanto, tudo desde o sinal # até o final da 
+... # linha é ignorado para fins de execução do programa.
+... notaMedia = total/numMaterias # aqui, é calculada a média.
+... return (notaMedia)
+
+>>> MedCurso(64,7.0)
+9.1428571428571423
+>>> 
+
+Agora, perceba na declaração acima alguns pontos vitais. Primeiro, a expressão 'def MedCurso(total, numMaterias):' começa a declaração da função. A forma de declarar uma função, portanto, é 'def NomeDaFuncao(parâmetro1, parâmetro2, ...)'. Perceba que as próximas 5 linhas estão tabuladas. Isto ocorre porque Python compreende a tabulação como sendo a sinalização dos blocos de código. Outras linguagens usam sinais, como chaves ou outras coisas, mas Python usa a tabulação para este papel, além de forçar a legibilidade do código (experto, não?). 
+
+Veja como as características acimas funcionam: quando Python lê a declaração da função, todas as próximas linhas tabuladas são encaradas como pertencendo a um mesmo grupo. A encontrar a próxima linha não tabulada, Python sabe que alcançou o fim da função. Também, em outras linguagens a tabulação é recomendada para facilitar a leitura do código, mas em Python a tabulação é parte da própria sintaxe da linguagem. 
+
+RODANDO UM PROGRAMA
+Quando escrever o código de seus programas, sugiro que use a extensão .py, embora isso não seja obrigatório. É apenas 'padrão', se é que existe isso :>. Para rodar um programa cujo código está no arquivo media.py, digite no terminal: 
+
+$ python media.py
