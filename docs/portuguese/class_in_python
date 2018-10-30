@@ -1,0 +1,16 @@
+CLASSES EM PYTHON
+Python é uma linguagem orientada a objetos, e trabalhar com objetos em Python é relativamente fácil. 
+
+Vamos esclarecer algumas coisas. Primeiro, algumas definições:
+Classe: é uma forma de unir dados e comportamento.
+Instância: quando você usa uma classe para criar um objeto qualquer, dizemos que isto é uma 'instância', ou um objeto.
+Métodos: são as funções de uma instância.
+Atributos: são os dados de uma instância.
+
+Trabalhar com classe é realmente útil Por exemplo, você pode usar algo que chamamos de 'herança'. Ou seja, criar classe baseadas em outras classes pré-existentes. A classe 'filho' possui os mesmos atributos e métodos da classe 'pai', mas possui a liberdade de possuir outros métodos e atributos.Uma classe 'filho' pode inclusive derivar de mais de uma classe 'pai': é o que chamamos de 'herança múltipla'. 
+
+Programação Orientada a Objetos (POO) não é algo que você aprenderá em instantes. É preciso um certo tempo para assentar no cérebro a forma de pensar própria deste caminho. Mas quando o conceito de herança estiver sendo usado por você de forma natural, saberá que a POO já faz parte da sua própria trilha. 
+
+Para definir uma nova classe, use 'class nomeDaClasse'. O bloco de código seguinte é a declaração da classe. Geralmente, inclui vários métodos. Para usar o conceito de herança, use a sintaxe 'class nomeDaClasse(classePai)'. 
+
+Para criar um novo objeto, faça 'novoObjeto=NomeDaClasse()'. É claro que, se houver parâmetros a passar para o novo objeto, você deve fazer isso entre os parênteses. Se não o fizer, Python chamará o 'construtor' de tal objeto para completar a tarefa. O 'construtor' simplesmente é o sistema de questionamento para completar os parâmetros necessários para o novo objeto existir. 
