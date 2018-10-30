@@ -1,0 +1,124 @@
+# INTRODUÇÃO
+ 
+Neste artigo darei uma introdução à programação com múltiplas threads. As threads podem prover muito mais liberdade ao programador e acelerar muitas tarefas demoradas se usadas de forma correta.
+
+Porém para compreendermos como elas funcionam precisaremos entender alguns conceitos, começando pela administração de processos por parte da CPU.
+
+ENTENDO COMO A CPU TRABALHA
+Para podermos implementar as threads é necessário entendermos primeiramente como a CPU administra seus processos. 
+
+A CPU consegue executar apenas um processo por vez, tal afirmação parece inconcebível haja vista que é possível, tranquilamente, jogar um videogame enquanto se escuta música no navegador. O que ocorre na realidade é a ilusão de que os processos estão sendo executados simultaneamente devido a um fenômeno chamado multiplexing. 
+
+Para entender o multiplexing vamos supor que seu computador possui três processos ativos: A(navegador), B(jogo), C(calculadora), para que o usuário possa usufruir dos três ao mesmo tempo, a CPU executa cada ora um pouco de um processo. 
+
+Há uma fila indicando qual processo deve ser executado a cada ora, o SO administra quanto tempo de processamento cada um receberá, até puxar o outro da fila. 
+
+Para clarificar as coisas vamos usar uma analogia: 
+
+Vamos supor que eu precisasse ler três livros, porém é humanamente impossível ler três livros ao mesmo tempo, logo leio o livro A durante 10 segundos, depois o B por 7 segundos, depois o C por 9 segundos, depois volto ao A e o ciclo continua. Por estar lendo cada ora um pouco de um, causarei a impressão de estar lendo os três simultaneamente. 
+
+THREADS
+Threads são a forma de um processo se subdividir, podendo assim, um processo executar mais de uma função concorrentemente. 
+
+Para exemplificar, vamos supor um vírus disfarçado de um jogo, a priori, um jogo inofensivo, porém enquanto você o joga este destrói o seu PC. Nesse caso há duas threads em ação, uma executa o jogo e outra as funções de destruição. 
+
+As threads são iguais processos, são concorrentes e não simultâneas. A diferença ente processos e threads consiste no fato de o primeiro disputar tempo de processamento da CPU, enquanto o segunda pertence a um processo, disputando assim o tempo de processamento dedicado ao processo. 
+
+Voltemos às analogias dos livros: 
+
+Leio 7 segundos de A, depois leio 5 segundos de B, depois 9 segundos de C, porém dessa vez vou usar threads em C. Tenho 9 segundos para dedicar à C, porém quero exercer duas funções: ler e fazer anotações sobre C nesses 9 segundos. Porém quero executar essas funções "simultaneamente", logo vou recorrer à mesma técnica usada com os processos: vou ler 1 segundo, escrever 1 segundo, ler 1 segundo, escrever 1 segundo... até o fim dos 9 segundos que tenho. Isso causa a impressão de que li e escrevi simultaneamente. 
+
+C representa um processo que possui 9 segundos (esse tempo é milhares de vezes menor na realidade) de processamento, o ato de ler C é a execução de uma thread pertencente ao processo C e o ato de escrever, outra execução de uma thread também pertencente à C. 
+
+Concluindo: a CPU dedica um tempo de processamento a um processo, esse tempo pode ser distribuído entre as threads deste processo para exercer várias funções distintas dentro dele. 
+
+Se ainda está meio confuso, vamos à prática para clarear as coisas. 
+
+Para implementar as threads vou usar a biblioteca 'threading': 
+
+from threading import *
+Há dois jeitos de implementá-las, atribuindo uma função a uma thread ou subclasseando o objeto Thread. Vamos ao primeiro método: 
+
+- Primeiro vou criar uma função que representará um carrinho, recebendo como argumento um identificador. 
+
+def Carrinho(identificador):
+	for c in range(1, 1000000):
+		print('Carrinho {} andou'.format(identificador))
+- Vou criar agora duas threads, com identificadores 1 e 2 e iniciá-las: 
+
+def main():
+	t1 = Thread(target=Carrinho, args=(1,))
+	t2 = Thread(target=Carrinho, args=(2,))
+	t1.start()
+	t2.start()
+
+if __name__ == '__main__':
+	main()
+- Observando o output do programa é perfeitamente possível ver a concorrência entre as threads, pois o carrinho 1 anda um pouco, depois o 2 anda um pouco, depois o 1 novamente... 
+
+Concluindo: 
+
+- Cria-se um objeto thread com 'Thread(target=funcao, args=(arg1, arg2, arg3))'. Obs.: o argumento é uma tupla. 
+
+- Inicia-se uma thread com x.start().
+
+IMPLEMENTAÇÃO EM PYTHON - SEGUNDO MÉTODO
+
+  
+
+
+ 
+O segundo método de implementar threads é criar uma classe herdando do objeto Thread, veja: 
+
+from threading import *
+
+class Carrinho(Thread):
+	def __init__(self, identificador):
+		self.identificador = identificador
+		Thread.__init__(self)
+
+	def run(self):
+		for c in range(1, 10000):
+			print('Carrinho {} andou'.format(self.identificador))
+
+def main():
+	t1 = Carrinho(1)
+	t2 = Carrinho(2)
+	t1.start()
+	t2.start()
+
+if __name__ == '__main__':
+	main()
+Concluindo: para criar um novo objeto Thread personalizado basta herdar do objeto Thread e sobrepor o método run(), que será chamado com x.start(). Vale salientar que é necessário iniciar o método construtor do objeto herdado com Thread.__init__(self).
+
+COORDENANDO THREADS CONCORRENTES
+
+ 
+Quando se começa a trabalhar com threads é necessário garantir que não haja conflito entre elas, para isso há vários objetos advindos do módulo threading para nos ajudar, nesse artigo trabalharemos especificamente com as Locks. 
+
+Primeiro criamos o objeto: 
+
+trava = Lock()
+Há dois métodos que podemos usar:
+trava.acquire() -- Com esse método a Thread que invocou agora "carregará" essa trava
+trava.release() -- A Thread agora "solta" a trava
+
+Se a Thread A carrega a trava X, e a Thread B tenta chamar o método acquire() desta trava, B congelará sua atividade até que seja possível carregar essa trava, ou seja, quando a Thread A chamar o método release() de X. 
+
+Por exemplo, para impedir que uma Thread B acesse a variável X enquanto Thread A a modifica, basta Thread A fazer o seguinte: 
+
+x = 0
+trava.acquire()
+x = 30
+trava.release()
+Desta forma, toda Thread concorrente que tentar modificar a variável x enquanto A carrega uma trava, congelará, voltando a sua atividade uma vez que esta trava esteja disponível. 
+
+Concluindo: locks servem para congelar threads que tentam obter travas previamente adquiridas por uma thread concorrente. 
+
+INDO ALÉM
+Visto os conceitos básicos da programação multithread, para o leitor que desejar ir além, recomendo o estudo dos seguintes tópicos:
+Outras formas de coordenação de threads: Semáforos, Events, Rlocks.
+Módulo multiprocessing, que irá fornecer outro método de implementar diversas funções em um único programa, porém sem o uso de threads.
+Se estiver usando Linux, o uso do fork para clonagem de processos, usando a biblioteca 'os'.
+
+Espero que tenham conseguido aprender com esse artigo, até a próxima.
